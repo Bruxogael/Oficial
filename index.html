@@ -102,6 +102,10 @@
             transform: none;
         }
 
+        .wallet-connected {
+            background: linear-gradient(45deg, #14f195, #9945ff) !important;
+        }
+
         .staking-section {
             background: rgba(42, 42, 60, 0.6);
             padding: 25px;
@@ -192,7 +196,6 @@
             padding: 15px;
             border-radius: 10px;
             text-align: center;
-            display: none;
         }
 
         .success {
@@ -205,6 +208,18 @@
             background: rgba(255, 69, 69, 0.2);
             border: 1px solid #ff4545;
             color: #ff4545;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .wallet-info {
+            background: rgba(153, 69, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid #9945ff;
         }
 
         footer {
@@ -262,6 +277,11 @@
 
         <section class="wallet-section">
             <button id="connectButton">🔗 Conectar Carteira Phantom</button>
+            <div id="walletInfo" class="wallet-info hidden">
+                <h3>✅ Carteira Conectada</h3>
+                <p id="walletAddress"></p>
+                <button id="disconnectButton">🔓 Desconectar</button>
+            </div>
         </section>
 
         <section class="balance-section">
@@ -277,10 +297,11 @@
                     id="amountInput" 
                     placeholder="Quantidade de tokens para travar"
                     min="1"
+                    disabled
                 >
             </div>
             <button id="stakeButton" disabled>🚀 Travar Tokens</button>
-            <button id="refreshButton">🔄 Atualizar Saldo</button>
+            <button id="refreshButton" disabled>🔄 Atualizar Saldo</button>
         </section>
 
         <section class="progress-section">
@@ -291,7 +312,7 @@
             <div id="progressText">0 / 466.200.000 tokens travados</div>
         </section>
 
-        <div id="transactionStatus" class="transaction-status"></div>
+        <div id="transactionStatus" class="transaction-status hidden"></div>
 
         <footer>
             <p>© 2024 Protocolo de Staking - Todos os direitos reservados</p>
@@ -307,6 +328,7 @@
 
         // Elementos DOM
         const connectButton = document.getElementById('connectButton');
+        const disconnectButton = document.getElementById('disconnectButton');
         const stakeButton = document.getElementById('stakeButton');
         const refreshButton = document.getElementById('refreshButton');
         const amountInput = document.getElementById('amountInput');
@@ -314,43 +336,98 @@
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
         const transactionStatus = document.getElementById('transactionStatus');
+        const walletInfo = document.getElementById('walletInfo');
+        const walletAddress = document.getElementById('walletAddress');
 
         let walletConnected = false;
         let userBalance = 0;
+        let userPublicKey = null;
 
-        // Simulação de conexão com carteira
-        connectButton.addEventListener('click', async () => {
-            if (!window.solana || !window.solana.isPhantom) {
-                showStatus('❌ Phantom Wallet não encontrada!', 'error');
-                return;
+        // Verificar se a Phantom Wallet está instalada
+        function checkPhantomAvailability() {
+            if (window.solana && window.solana.isPhantom) {
+                return true;
+            } else {
+                connectButton.textContent = '❌ Phantom Wallet Não Instalada';
+                connectButton.disabled = true;
+                showStatus('⚠️ Instale a Phantom Wallet para continuar', 'error');
+                return false;
             }
+        }
+
+        // Conectar à carteira Phantom
+        async function connectWallet() {
+            if (!checkPhantomAvailability()) return;
 
             try {
                 connectButton.disabled = true;
                 connectButton.textContent = 'Conectando...';
 
-                // Simulação de conexão - na implementação real use window.solana.connect()
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // Solicitar conexão
+                const response = await window.solana.connect();
+                userPublicKey = response.publicKey.toString();
                 
                 walletConnected = true;
                 connectButton.textContent = '✅ Carteira Conectada';
-                connectButton.disabled = true;
-                stakeButton.disabled = false;
+                connectButton.classList.add('wallet-connected');
                 
-                // Simular saldo
-                userBalance = Math.random() * 1000000;
+                // Mostrar informações da carteira
+                walletAddress.textContent = userPublicKey;
+                walletInfo.classList.remove('hidden');
+                
+                // Habilitar funcionalidades
+                amountInput.disabled = false;
+                stakeButton.disabled = false;
+                refreshButton.disabled = false;
+                
+                // Simular saldo (na implementação real, buscar do blockchain)
+                userBalance = Math.floor(Math.random() * 10000);
                 updateBalance(userBalance);
+                
                 showStatus('✅ Carteira conectada com sucesso!', 'success');
 
             } catch (error) {
-                showStatus('❌ Erro ao conectar carteira', 'error');
+                console.error('Erro ao conectar:', error);
+                showStatus('❌ Erro ao conectar carteira: ' + error.message, 'error');
                 connectButton.disabled = false;
                 connectButton.textContent = '🔗 Conectar Carteira Phantom';
             }
-        });
+        }
+
+        // Desconectar carteira
+        async function disconnectWallet() {
+            try {
+                if (window.solana && walletConnected) {
+                    await window.solana.disconnect();
+                }
+            } catch (error) {
+                console.error('Erro ao desconectar:', error);
+            } finally {
+                resetWallet();
+            }
+        }
+
+        // Resetar estado da carteira
+        function resetWallet() {
+            walletConnected = false;
+            userPublicKey = null;
+            userBalance = 0;
+            
+            connectButton.textContent = '🔗 Conectar Carteira Phantom';
+            connectButton.disabled = false;
+            connectButton.classList.remove('wallet-connected');
+            
+            walletInfo.classList.add('hidden');
+            amountInput.disabled = true;
+            stakeButton.disabled = true;
+            refreshButton.disabled = true;
+            
+            updateBalance(0);
+            showStatus('🔒 Carteira desconectada', 'success');
+        }
 
         // Simulação de staking
-        stakeButton.addEventListener('click', async () => {
+        async function performStaking() {
             const amount = parseInt(amountInput.value);
             
             if (!amount || amount <= 0) {
@@ -365,11 +442,12 @@
 
             try {
                 stakeButton.disabled = true;
-                stakeButton.textContent = 'Travando...';
+                stakeButton.textContent = 'Processando...';
 
-                // Simular transação
+                // Simular transação blockchain (2 segundos)
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 
+                // Atualizar saldo e progresso
                 userBalance -= amount;
                 updateBalance(userBalance);
                 updateProgress(amount);
@@ -378,57 +456,73 @@
                 amountInput.value = '';
 
             } catch (error) {
-                showStatus('❌ Erro na transação', 'error');
+                showStatus('❌ Erro na transação: ' + error.message, 'error');
             } finally {
                 stakeButton.disabled = false;
                 stakeButton.textContent = '🚀 Travar Tokens';
             }
-        });
+        }
 
-        refreshButton.addEventListener('click', () => {
-            // Simular atualização de saldo
-            userBalance = Math.random() * 1000000;
-            updateBalance(userBalance);
-            showStatus('✅ Saldo atualizado!', 'success');
-        });
-
+        // Atualizar saldo na interface
         function updateBalance(balance) {
             balanceDisplay.textContent = `${balance.toLocaleString()} tokens`;
         }
 
+        // Atualizar barra de progresso
         function updateProgress(amount) {
-            // Simular progresso (em uma implementação real, isso viria do blockchain)
-            const currentProgress = Math.random() * STAKING_GOAL;
+            const currentProgress = Math.min(amount + (Math.random() * STAKING_GOAL * 0.3), STAKING_GOAL);
             const percentage = Math.min((currentProgress / STAKING_GOAL) * 100, 100);
             
             progressBar.style.width = `${percentage}%`;
             progressBar.textContent = `${percentage.toFixed(1)}%`;
-            progressText.textContent = `${currentProgress.toLocaleString()} / ${STAKING_GOAL.toLocaleString()} tokens travados`;
+            progressText.textContent = `${Math.floor(currentProgress).toLocaleString()} / ${STAKING_GOAL.toLocaleString()} tokens travados`;
         }
 
+        // Mostrar mensagens de status
         function showStatus(message, type) {
             transactionStatus.textContent = message;
             transactionStatus.className = `transaction-status ${type}`;
-            transactionStatus.style.display = 'block';
+            transactionStatus.classList.remove('hidden');
             
             setTimeout(() => {
-                transactionStatus.style.display = 'none';
+                transactionStatus.classList.add('hidden');
             }, 5000);
         }
+
+        // Event Listeners
+        connectButton.addEventListener('click', connectWallet);
+        disconnectButton.addEventListener('click', disconnectWallet);
+        stakeButton.addEventListener('click', performStaking);
+        
+        refreshButton.addEventListener('click', () => {
+            userBalance = Math.floor(Math.random() * 10000);
+            updateBalance(userBalance);
+            showStatus('✅ Saldo atualizado!', 'success');
+        });
+
+        // Verificar automaticamente se a Phantom está disponível
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkPhantomAvailability()) {
+                // Verificar se já está conectado
+                window.solana.on('connect', () => {
+                    userPublicKey = window.solana.publicKey.toString();
+                    walletConnected = true;
+                    connectButton.textContent = '✅ Carteira Conectada';
+                    connectButton.classList.add('wallet-connected');
+                    walletInfo.classList.remove('hidden');
+                    walletAddress.textContent = userPublicKey;
+                    amountInput.disabled = false;
+                    stakeButton.disabled = false;
+                    refreshButton.disabled = false;
+                });
+
+                window.solana.on('disconnect', resetWallet);
+            }
+        });
 
         // Inicialização
         updateBalance(0);
         updateProgress(0);
-
-        // Detectar Phantom Wallet<button id="phantomButton">Conectar Phantom</button>
-<p>Conta: <span id="accountSpan">-</span></p>
-<script src="index.js"></script>
-        if (window.solana && window.solana.isPhantom) {
-            connectButton.textContent = '🔗 Conectar Carteira Phantom';
-        } else {
-            connectButton.textContent = '❌ Phantom Não Encontrada';
-            connectButton.disabled = true;
-        }
     </script>
 </body>
-</html>
+    </html>
