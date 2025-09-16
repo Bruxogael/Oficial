@@ -1,0 +1,85 @@
+# Oficial
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token BXG - Bruxo Gael</title>
+<style>
+    body { font-family: Arial, sans-serif; background-color:#000; color:#fff; margin:0; padding:0; }
+    header { text-align:center; padding:30px; }
+    header img { width:150px; height:150px; border-radius:50%; border:3px solid #8A2BE2; display:block; margin:0 auto; }
+    h1 { color:#fff; margin:15px 0; }
+    section { background-color:#111; margin:20px auto; padding:25px 20px; max-width:700px; border-radius:12px; box-shadow:0 0 20px rgba(138,43,226,0.5); text-align:center; }
+    h2 { color:#8A2BE2; margin-bottom:15px; }
+    p { font-size:1.1em; line-height:1.6; margin-bottom:12px; text-align:justify; }
+    a { color:#8A2BE2; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .wallet-button { display:inline-block; background:#8A2BE2; color:#fff; padding:12px 30px; margin:10px auto; border-radius:8px; cursor:pointer; font-weight:bold; text-decoration:none; transition: background 0.3s, transform 0.2s; }
+    .wallet-button:hover { background:#ff00ff; transform:scale(1.05); }
+    .hidden { display:none; }
+    footer { text-align:center; padding:15px; background-color:#111; color:#aaa; }
+</style>
+</head>
+<body>
+
+<header>
+    <img src="https://gateway.irys.xyz/5gDLwLEV6xLpnyWLPGxLVF3R5xwAVfonYKBWWW3ct7jY" alt="Logo do Token BXG">
+    <h1>Token BXG - Bruxo Gael</h1>
+</header>
+
+<section>
+    <h2>Sobre o Token</h2>
+    <p>BXG é o token oficial do <strong>Bruxo Gael</strong>, projetado para integrar <strong>espiritualidade moderna e tecnologia cripto</strong>. Ele é utilizado como forma de pagamento pelos serviços do Bruxo Gael, incluindo leituras de tarô, consultas e trabalhos mágicos.</p>
+    <p>10% do supply total será distribuído em dezembro de 2025 como bonificação para seguidores que utilizam os serviços.</p>
+    <p><strong>Supply Total:</strong> 666.000.000 BXG</p>
+    <p><strong>Distribuição:</strong> 10% em dezembro de 2025</p>
+    <p><strong>Contrato:</strong> <a href="https://solscan.io/token/7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3" target="_blank">7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3</a></p>
+    <a href="#" class="wallet-button" id="connect-wallet">Conectar Carteira Phantom</a>
+    <div id="buy-button" class="hidden">
+        <a href="#" class="wallet-button" id="buy-bxg">Comprar BXG</a>
+    </div>
+</section>
+
+<section>
+    <h2>Redes Sociais</h2>
+    <p><strong>Twitter (X):</strong> <a href="https://x.com/BruxoGael?t=jYCq7HrqHzxl15yRPUCtuQ&s=09" target="_blank">@BruxoGael</a></p>
+    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/seuusuario/" target="_blank">@seuusuario</a></p>
+    <p><strong>TikTok:</strong> <a href="https://www.tiktok.com/@seuusuario" target="_blank">@seuusuario</a></p>
+    <p><strong>Telegram:</strong> <a href="https://t.me/seucanal" target="_blank">Seu Canal no Telegram</a></p>
+</section>
+
+<footer>
+    <p>&copy; 2025 Token BXG. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+let provider;
+
+// Conectar carteira Phantom
+document.getElementById('connect-wallet').addEventListener('click', async () => {
+    provider = window.solana;
+    if (provider && provider.isPhantom) {
+        try {
+            const resp = await provider.connect();
+            console.log("Conectado:", resp.publicKey.toString());
+            alert("Carteira conectada com sucesso!");
+            document.getElementById('buy-button').classList.remove('hidden');
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao conectar a carteira.");
+        }
+    } else {
+        alert("Instale a carteira Phantom para continuar.");
+    }
+});
+
+// Botão de compra BXG
+document.getElementById('buy-bxg').addEventListener('click', () => {
+    if (!provider) return alert("Conecte sua carteira primeiro!");
+    window.open("https://app.bruxogael.io/buy", "_blank"); // substituir pelo link real do contrato
+});
+</script>
+
+</body>
+</html>
