@@ -420,7 +420,9 @@
         updateBalance(0);
         updateProgress(0);
 
-        // Detectar Phantom Wallet
+        // Detectar Phantom Wallet<button id="phantomButton">Conectar Phantom</button>
+<p>Conta: <span id="accountSpan">-</span></p>
+<script src="index.js"></script>
         if (window.solana && window.solana.isPhantom) {
             connectButton.textContent = '🔗 Conectar Carteira Phantom';
         } else {
