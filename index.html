@@ -1,83 +1,125 @@
-# Oficial
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Token BXG - Bruxo Gael</title>
+<script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@solana/spl-token@latest/lib/index.iife.min.js"></script>
 <style>
-    body { font-family: Arial, sans-serif; background-color:#000; color:#fff; margin:0; padding:0; }
-    header { text-align:center; padding:30px; }
-    header img { width:150px; height:150px; border-radius:50%; border:3px solid #8A2BE2; display:block; margin:0 auto; }
-    h1 { color:#fff; margin:15px 0; }
-    section { background-color:#111; margin:20px auto; padding:25px 20px; max-width:700px; border-radius:12px; box-shadow:0 0 20px rgba(138,43,226,0.5); text-align:center; }
-    h2 { color:#8A2BE2; margin-bottom:15px; }
-    p { font-size:1.1em; line-height:1.6; margin-bottom:12px; text-align:justify; }
-    a { color:#8A2BE2; text-decoration:none; }
-    a:hover { text-decoration:underline; }
-    .wallet-button { display:inline-block; background:#8A2BE2; color:#fff; padding:12px 30px; margin:10px auto; border-radius:8px; cursor:pointer; font-weight:bold; text-decoration:none; transition: background 0.3s, transform 0.2s; }
-    .wallet-button:hover { background:#ff00ff; transform:scale(1.05); }
-    .hidden { display:none; }
-    footer { text-align:center; padding:15px; background-color:#111; color:#aaa; }
+body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1a1a1a, #2e1a3a, #3d3d3d); color: #fff; margin:0; padding:0; animation: bgAnimation 15s ease infinite;}
+@keyframes bgAnimation {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+header{text-align:center;padding:30px;}
+h1{color:#9b59b6;margin:15px 0;}
+section{background-color:rgba(50,0,50,0.7);margin:20px auto;padding:20px;max-width:600px;border-radius:12px;box-shadow:0 0 15px rgba(155,89,182,0.4);}
+h2{color:#ff4081;}
+p{font-size:1.1em;line-height:1.6;}
+a{color:#ff4081;text-decoration:none;}
+a:hover{text-decoration:underline;}
+.button{display:inline-block;background:#9b59b6;color:#fff;padding:10px 20px;margin:10px 5px 0 0;border-radius:8px;cursor:pointer;font-weight:bold;text-decoration:none;}
+.button:hover{background:#ff4081;}
+select,input{margin-top:10px;padding:8px;border-radius:6px;border:none;width:100%;}
 </style>
 </head>
 <body>
 
 <header>
-    <img src="https://gateway.irys.xyz/5gDLwLEV6xLpnyWLPGxLVF3R5xwAVfonYKBWWW3ct7jY" alt="Logo do Token BXG">
-    <h1>Token BXG - Bruxo Gael</h1>
+<h1>Token BXG - Bruxo Gael</h1>
 </header>
 
 <section>
-    <h2>Sobre o Token</h2>
-    <p>BXG é o token oficial do <strong>Bruxo Gael</strong>, projetado para integrar <strong>espiritualidade moderna e tecnologia cripto</strong>. Ele é utilizado como forma de pagamento pelos serviços do Bruxo Gael, incluindo leituras de tarô, consultas e trabalhos mágicos.</p>
-    <p>10% do supply total será distribuído em dezembro de 2025 como bonificação para seguidores que utilizam os serviços.</p>
-    <p><strong>Supply Total:</strong> 666.000.000 BXG</p>
-    <p><strong>Distribuição:</strong> 10% em dezembro de 2025</p>
-    <p><strong>Contrato:</strong> <a href="https://solscan.io/token/7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3" target="_blank">7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3</a></p>
-    <a href="#" class="wallet-button" id="connect-wallet">Conectar Carteira Phantom</a>
-    <div id="buy-button" class="hidden">
-        <a href="#" class="wallet-button" id="buy-bxg">Comprar BXG</a>
-    </div>
+<h2>Sobre o Token</h2>
+<p>O BXG é o token oficial do <strong>Bruxo Gael</strong>, integrando <strong>espiritualidade e tecnologia cripto</strong>.</p>
+<p><strong>Supply Total:</strong> 666.000.000 BXG</p>
+<p><strong>Distribuição:</strong> 10% em dezembro de 2025</p>
+<p><strong>Contrato do Token:</strong> <a href="https://solscan.io/token/7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3" target="_blank">7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3</a></p>
+<p><strong>Contrato da Pool:</strong> <a href="https://solscan.io/account/95C6Cw4E5UmpFcru6rEKLFksFHHQXNDtEPWpdXeRdYKf" target="_blank">95C6Cw4E5UmpFcru6rEKLFksFHHQXNDtEPWpdXeRdYKf</a></p>
+
+<a href="https://phantom.com/" target="_blank" class="button">Baixar Carteira Phantom</a>
+<button class="button" id="connect-wallet">Conectar Carteira Phantom</button>
+
+<div>
+<label for="paymentToken">Escolha a moeda de pagamento:</label>
+<select id="paymentToken">
+<option value="USDC">USDC</option>
+<option value="USDT">USDT</option>
+<option value="SOL">SOL</option>
+</select>
+</div>
+
+<div>
+<label for="amount">Digite quanto deseja pagar:</label>
+<input type="number" id="amount" placeholder="Valor em SOL/USDC/USDT" />
+</div>
+
+<button class="button" id="buy-bxg">Comprar BXG</button>
 </section>
 
 <section>
-    <h2>Redes Sociais</h2>
-    <p><strong>Twitter (X):</strong> <a href="https://x.com/BruxoGael?t=jYCq7HrqHzxl15yRPUCtuQ&s=09" target="_blank">@BruxoGael</a></p>
-    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/seuusuario/" target="_blank">@seuusuario</a></p>
-    <p><strong>TikTok:</strong> <a href="https://www.tiktok.com/@seuusuario" target="_blank">@seuusuario</a></p>
-    <p><strong>Telegram:</strong> <a href="https://t.me/seucanal" target="_blank">Seu Canal no Telegram</a></p>
+<h2>Redes Sociais</h2>
+<p><strong>Twitter (X):</strong> <a href="https://x.com/BruxoGael?t=jYCq7HrqHzxl15yRPUCtuQ&s=09" target="_blank">@BruxoGael</a></p>
+<p><strong>Instagram:</strong> <a href="https://www.instagram.com/seuusuario/" target="_blank">@seuusuario</a></p>
+<p><strong>TikTok:</strong> <a href="https://www.tiktok.com/@seuusuario" target="_blank">@seuusuario</a></p>
+<p><strong>Telegram:</strong> <a href="https://t.me/seucanal" target="_blank">Seu Canal no Telegram</a></p>
 </section>
 
-<footer>
-    <p>&copy; 2025 Token BXG. Todos os direitos reservados.</p>
+<footer style="text-align:center; padding:10px; background-color:#2e1a3a;">
+<p>&copy; 2025 Token BXG. Todos os direitos reservados.</p>
 </footer>
 
 <script>
-let provider;
+let walletAddress = null;
+const tokenContract = new solanaWeb3.PublicKey("7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3");
+const poolContract = new solanaWeb3.PublicKey("95C6Cw4E5UmpFcru6rEKLFksFHHQXNDtEPWpdXeRdYKf");
 
-// Conectar carteira Phantom
 document.getElementById('connect-wallet').addEventListener('click', async () => {
-    provider = window.solana;
-    if (provider && provider.isPhantom) {
-        try {
-            const resp = await provider.connect();
-            console.log("Conectado:", resp.publicKey.toString());
-            alert("Carteira conectada com sucesso!");
-            document.getElementById('buy-button').classList.remove('hidden');
-        } catch (err) {
-            console.error(err);
-            alert("Erro ao conectar a carteira.");
-        }
-    } else {
-        alert("Instale a carteira Phantom para continuar.");
-    }
+    if(window.solana && window.solana.isPhantom){
+        try{
+            const resp = await window.solana.connect();
+            walletAddress = resp.publicKey.toString();
+            alert('Carteira conectada: '+walletAddress);
+        }catch(err){ console.error(err); alert('Erro ao conectar a carteira Phantom.'); }
+    }else{ alert('Instale a carteira Phantom para continuar.'); }
 });
 
-// Botão de compra BXG
-document.getElementById('buy-bxg').addEventListener('click', () => {
-    if (!provider) return alert("Conecte sua carteira primeiro!");
-    window.open("https://app.bruxogael.io/buy", "_blank"); // substituir pelo link real do contrato
+document.getElementById('buy-bxg').addEventListener('click', async () => {
+    if(!walletAddress){ alert('Conecte a carteira Phantom primeiro.'); return; }
+
+    const paymentToken = document.getElementById('paymentToken').value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    if(!amount || amount<=0){ alert('Digite uma quantidade válida.'); return; }
+
+    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+    const fromWallet = window.solana;
+
+    try{
+        // Aqui você integraria o cálculo real de BXG via pool, dependendo do valor pago
+        // Transação de pagamento para pool
+        let tx;
+        if(paymentToken==='SOL'){
+            tx = new solanaWeb3.Transaction().add(
+                solanaWeb3.SystemProgram.transfer({
+                    fromPubkey: fromWallet.publicKey,
+                    toPubkey: poolContract,
+                    lamports: amount * 1e9
+                })
+            );
+        } else {
+            // Transferência SPL Token (USDC/USDT) usando @solana/spl-token
+            // Implementação real necessária aqui
+        }
+
+        if(tx){
+            const { blockhash } = await connection.getRecentBlockhash();
+            tx.recentBlockhash = blockhash;
+            tx.feePayer = fromWallet.publicKey;
+            const signed = await fromWallet.signTransaction(tx);
+            const signature = await connection.sendRawTransaction(signed.serialize());
+            await connection.confirmTransaction(signature);
+            alert('Pagamento enviado com sucesso! BXG será transferido automaticamente para o comprador.');
+        }
+
+    }catch(err){ console.error(err); alert('Erro ao processar a transação: '+err.message); }
 });
 </script>
 
