@@ -1,127 +1,432 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Token BXG - Bruxo Gael</title>
-<script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@solana/spl-token@latest/lib/index.iife.min.js"></script>
-<style>
-body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1a1a1a, #2e1a3a, #3d3d3d); color: #fff; margin:0; padding:0; animation: bgAnimation 15s ease infinite;}
-@keyframes bgAnimation {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-header{text-align:center;padding:30px;}
-h1{color:#9b59b6;margin:15px 0;}
-section{background-color:rgba(50,0,50,0.7);margin:20px auto;padding:20px;max-width:600px;border-radius:12px;box-shadow:0 0 15px rgba(155,89,182,0.4);}
-h2{color:#ff4081;}
-p{font-size:1.1em;line-height:1.6;}
-a{color:#ff4081;text-decoration:none;}
-a:hover{text-decoration:underline;}
-.button{display:inline-block;background:#9b59b6;color:#fff;padding:10px 20px;margin:10px 5px 0 0;border-radius:8px;cursor:pointer;font-weight:bold;text-decoration:none;}
-.button:hover{background:#ff4081;}
-select,input{margin-top:10px;padding:8px;border-radius:6px;border:none;width:100%;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staking Protocol - Meu Token</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(28, 28, 46, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid #9945ff;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #14f195;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #9945ff, #14f195);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(153, 69, 255, 0.3);
+        }
+
+        .token-info {
+            background: rgba(42, 42, 60, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #14f195;
+        }
+
+        .token-info h3 {
+            color: #9945ff;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: rgba(153, 69, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #9945ff;
+        }
+
+        .wallet-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        #connectButton {
+            background: linear-gradient(45deg, #9945ff, #14f195);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(153, 69, 255, 0.4);
+        }
+
+        #connectButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(153, 69, 255, 0.6);
+        }
+
+        #connectButton:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .staking-section {
+            background: rgba(42, 42, 60, 0.6);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 1px solid #9945ff;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #9945ff;
+            background: rgba(15, 15, 35, 0.8);
+            color: white;
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #14f195;
+            box-shadow: 0 0 10px rgba(20, 241, 149, 0.5);
+        }
+
+        button {
+            background: linear-gradient(45deg, #9945ff, #14f195);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(153, 69, 255, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .balance-section {
+            text-align: center;
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(20, 241, 149, 0.1);
+            border-radius: 15px;
+            border: 1px solid #14f195;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 25px;
+            background: rgba(15, 15, 35, 0.8);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 2px solid #9945ff;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #9945ff, #14f195);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .transaction-status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background: rgba(20, 241, 149, 0.2);
+            border: 1px solid #14f195;
+            color: #14f195;
+        }
+
+        .error {
+            background: rgba(255, 69, 69, 0.2);
+            border: 1px solid #ff4545;
+            color: #ff4545;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #9945ff;
+            color: #9945ff;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>🔥 Protocolo de Staking</h1>
+            <p>Trave seus tokens e contribua com o ecossistema</p>
+        </header>
 
-<header>
-<h1>Token BXG - Bruxo Gael</h1>
-</header>
+        <section class="token-info">
+            <h3>📊 Informações do Token</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Contrato:</strong>
+                    <div style="font-size: 0.9em; word-break: break-all;">7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3</div>
+                </div>
+                <div class="info-item">
+                    <strong>Supply Total:</strong>
+                    <div>666.000.000 tokens</div>
+                </div>
+                <div class="info-item">
+                    <strong>Meta de Staking:</strong>
+                    <div>466.200.000 tokens (70%)</div>
+                </div>
+                <div class="info-item">
+                    <strong>Circulação Restante:</strong>
+                    <div>199.800.000 tokens (30%)</div>
+                </div>
+            </div>
+        </section>
 
-<section>
-<h2>Sobre o Token</h2>
-<p>O BXG é o token oficial do <strong>Bruxo Gael</strong>, integrando <strong>espiritualidade e tecnologia cripto</strong>.</p>
-<p><strong>Supply Total:</strong> 666.000.000 BXG</p>
-<p><strong>Distribuição:</strong> 10% em dezembro de 2025</p>
-<p><strong>Contrato do Token:</strong> <a href="https://solscan.io/token/7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3" target="_blank">7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3</a></p>
-<p><strong>Contrato da Pool:</strong> <a href="https://solscan.io/account/95C6Cw4E5UmpFcru6rEKLFksFHHQXNDtEPWpdXeRdYKf" target="_blank">95C6Cw4E5UmpFcru6rEKLFksFHHQXNDtEPWpdXeRdYKf</a></p>
+        <section class="wallet-section">
+            <button id="connectButton">🔗 Conectar Carteira Phantom</button>
+        </section>
 
-<a href="https://phantom.com/" target="_blank" class="button">Baixar Carteira Phantom</a>
-<button class="button" id="connect-wallet">Conectar Carteira Phantom</button>
+        <section class="balance-section">
+            <h3>💰 Saldo Disponível</h3>
+            <div id="balanceDisplay">0 tokens</div>
+        </section>
 
-<div>
-<label for="paymentToken">Escolha a moeda de pagamento:</label>
-<select id="paymentToken">
-<option value="USDC">USDC</option>
-<option value="USDT">USDT</option>
-<option value="SOL">SOL</option>
-</select>
-</div>
+        <section class="staking-section">
+            <h3>⛓️ Fazer Staking</h3>
+            <div class="input-group">
+                <input 
+                    type="number" 
+                    id="amountInput" 
+                    placeholder="Quantidade de tokens para travar"
+                    min="1"
+                >
+            </div>
+            <button id="stakeButton" disabled>🚀 Travar Tokens</button>
+            <button id="refreshButton">🔄 Atualizar Saldo</button>
+        </section>
 
-<div>
-<label for="amount">Digite quanto deseja pagar:</label>
-<input type="number" id="amount" placeholder="Valor em SOL/USDC/USDT" />
-</div>
+        <section class="progress-section">
+            <h3>📈 Progresso do Staking</h3>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+            </div>
+            <div id="progressText">0 / 466.200.000 tokens travados</div>
+        </section>
 
-<button class="button" id="buy-bxg">Comprar BXG</button>
-</section>
+        <div id="transactionStatus" class="transaction-status"></div>
 
-<section>
-<h2>Redes Sociais</h2>
-<p><strong>Twitter (X):</strong> <a href="https://x.com/BruxoGael?t=jYCq7HrqHzxl15yRPUCtuQ&s=09" target="_blank">@BruxoGael</a></p>
-<p><strong>Instagram:</strong> <a href="https://www.instagram.com/bruxo_gael/" target="_blank">@seuusuario</a></p>
-<p><strong>TikTok:</strong> <a href="https://www.tiktok.com/@seuusuario" target="_blank">@seuusuario</a></p>
-<p><strong>Telegram:</strong> <a href="https://t.me/seucanal" target="_blank">Seu Canal no Telegram</a></p>
-</section>
+        <footer>
+            <p>© 2024 Protocolo de Staking - Todos os direitos reservados</p>
+        </footer>
+    </div>
 
-<footer style="text-align:center; padding:10px; background-color:#2e1a3a;">
-<p>&copy; 2025 Token BXG. Todos os direitos reservados.</p>
-</footer>
+    <script>
+        // Configurações do Token
+        const TOKEN_ADDRESS = '7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3';
+        const TOTAL_SUPPLY = 666000000;
+        const STAKING_GOAL = 466200000; // 70%
+        const STAKING_WALLET = 'SUA_CARTEIRA_AQUI'; // Substitua pelo seu endereço
 
-<script>
-let walletAddress = null;
-const tokenContract = new solanaWeb3.PublicKey("7Xqga8Lzv4nQJuSgqSgEE6CuvBwwx3SXM4Ah8bsKQew3");
-const poolContract = new solanaWeb3.PublicKey("95C6Cw4E5UmpFcru6rEKLFksFHHQXNDtEPWpdXeRdYKf");
+        // Elementos DOM
+        const connectButton = document.getElementById('connectButton');
+        const stakeButton = document.getElementById('stakeButton');
+        const refreshButton = document.getElementById('refreshButton');
+        const amountInput = document.getElementById('amountInput');
+        const balanceDisplay = document.getElementById('balanceDisplay');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const transactionStatus = document.getElementById('transactionStatus');
 
-document.getElementById('connect-wallet').addEventListener('click', async () => {
-    if(window.solana && window.solana.isPhantom){
-        try{
-            const resp = await window.solana.connect();
-            walletAddress = resp.publicKey.toString();
-            alert('Carteira conectada: '+walletAddress);
-        }catch(err){ console.error(err); alert('Erro ao conectar a carteira Phantom.'); }
-    }else{ alert('Instale a carteira Phantom para continuar.'); }
-});
+        let walletConnected = false;
+        let userBalance = 0;
 
-document.getElementById('buy-bxg').addEventListener('click', async () => {
-    if(!walletAddress){ alert('Conecte a carteira Phantom primeiro.'); return; }
+        // Simulação de conexão com carteira
+        connectButton.addEventListener('click', async () => {
+            if (!window.solana || !window.solana.isPhantom) {
+                showStatus('❌ Phantom Wallet não encontrada!', 'error');
+                return;
+            }
 
-    const paymentToken = document.getElementById('paymentToken').value;
-    const amount = parseFloat(document.getElementById('amount').value);
-    if(!amount || amount<=0){ alert('Digite uma quantidade válida.'); return; }
+            try {
+                connectButton.disabled = true;
+                connectButton.textContent = 'Conectando...';
 
-    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
-    const fromWallet = window.solana;
+                // Simulação de conexão - na implementação real use window.solana.connect()
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                walletConnected = true;
+                connectButton.textContent = '✅ Carteira Conectada';
+                connectButton.disabled = true;
+                stakeButton.disabled = false;
+                
+                // Simular saldo
+                userBalance = Math.random() * 1000000;
+                updateBalance(userBalance);
+                showStatus('✅ Carteira conectada com sucesso!', 'success');
 
-    try{
-        // Aqui você integraria o cálculo real de BXG via pool, dependendo do valor pago
-        // Transação de pagamento para pool
-        let tx;
-        if(paymentToken==='SOL'){
-            tx = new solanaWeb3.Transaction().add(
-                solanaWeb3.SystemProgram.transfer({
-                    fromPubkey: fromWallet.publicKey,
-                    toPubkey: poolContract,
-                    lamports: amount * 1e9
-                })
-            );
+            } catch (error) {
+                showStatus('❌ Erro ao conectar carteira', 'error');
+                connectButton.disabled = false;
+                connectButton.textContent = '🔗 Conectar Carteira Phantom';
+            }
+        });
+
+        // Simulação de staking
+        stakeButton.addEventListener('click', async () => {
+            const amount = parseInt(amountInput.value);
+            
+            if (!amount || amount <= 0) {
+                showStatus('❌ Insira uma quantidade válida', 'error');
+                return;
+            }
+
+            if (amount > userBalance) {
+                showStatus('❌ Saldo insuficiente', 'error');
+                return;
+            }
+
+            try {
+                stakeButton.disabled = true;
+                stakeButton.textContent = 'Travando...';
+
+                // Simular transação
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                userBalance -= amount;
+                updateBalance(userBalance);
+                updateProgress(amount);
+                
+                showStatus(`✅ ${amount.toLocaleString()} tokens travados com sucesso!`, 'success');
+                amountInput.value = '';
+
+            } catch (error) {
+                showStatus('❌ Erro na transação', 'error');
+            } finally {
+                stakeButton.disabled = false;
+                stakeButton.textContent = '🚀 Travar Tokens';
+            }
+        });
+
+        refreshButton.addEventListener('click', () => {
+            // Simular atualização de saldo
+            userBalance = Math.random() * 1000000;
+            updateBalance(userBalance);
+            showStatus('✅ Saldo atualizado!', 'success');
+        });
+
+        function updateBalance(balance) {
+            balanceDisplay.textContent = `${balance.toLocaleString()} tokens`;
+        }
+
+        function updateProgress(amount) {
+            // Simular progresso (em uma implementação real, isso viria do blockchain)
+            const currentProgress = Math.random() * STAKING_GOAL;
+            const percentage = Math.min((currentProgress / STAKING_GOAL) * 100, 100);
+            
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${percentage.toFixed(1)}%`;
+            progressText.textContent = `${currentProgress.toLocaleString()} / ${STAKING_GOAL.toLocaleString()} tokens travados`;
+        }
+
+        function showStatus(message, type) {
+            transactionStatus.textContent = message;
+            transactionStatus.className = `transaction-status ${type}`;
+            transactionStatus.style.display = 'block';
+            
+            setTimeout(() => {
+                transactionStatus.style.display = 'none';
+            }, 5000);
+        }
+
+        // Inicialização
+        updateBalance(0);
+        updateProgress(0);
+
+        // Detectar Phantom Wallet
+        if (window.solana && window.solana.isPhantom) {
+            connectButton.textContent = '🔗 Conectar Carteira Phantom';
         } else {
-            // Transferência SPL Token (USDC/USDT) usando @solana/spl-token
-            // Implementação real necessária aqui
+            connectButton.textContent = '❌ Phantom Não Encontrada';
+            connectButton.disabled = true;
         }
-
-        if(tx){
-            const { blockhash } = await connection.getRecentBlockhash();
-            tx.recentBlockhash = blockhash;
-            tx.feePayer = fromWallet.publicKey;
-            const signed = await fromWallet.signTransaction(tx);
-            const signature = await connection.sendRawTransaction(signed.serialize());
-            await connection.confirmTransaction(signature);
-            alert('Pagamento enviado com sucesso! BXG será transferido automaticamente para o comprador.');
-        }
-
-    }catch(err){ console.error(err); alert('Erro ao processar a transação: '+err.message); }
-});
-</script>
-
+    </script>
 </body>
 </html>
